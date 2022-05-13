@@ -1,0 +1,7 @@
+*.out
+*.o
+env.txt
+/libftTester
+*.a
+*.gch
+*.swp
