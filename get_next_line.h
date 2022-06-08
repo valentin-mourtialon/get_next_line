@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get-next-line.h                                    :+:      :+:    :+:   */
+/*   get_next_line.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vmourtia <vmourtia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/13 13:57:00 by vmourtia          #+#    #+#             */
-/*   Updated: 2022/05/13 16:30:29 by vmourtia         ###   ########.fr       */
+/*   Updated: 2022/06/08 10:49:12 by vmourtia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,5 +21,7 @@
 
 char	*get_next_line(int fd);
 void	ft_putstr_fd(char *s, int fd);
-char	*ft_strjoin(char const *s1, char const *s2)
+size_t	ft_strlen(const char *s);
+char	*ft_strjoin(char const *s1, char const *s2);
+char	**ft_split(char const *s, char c);
 #endif

@@ -1,7 +1,8 @@
+env.txt
+static_var_tests.c
+open_func_tests.c
 *.out
 *.o
-env.txt
-/libftTester
 *.a
 *.gch
 *.swp
