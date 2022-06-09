@@ -3,7 +3,7 @@
 File       |  buffer size = 4 (malloc 4 + 1 pour '\0') | [0 0 0 0 0]
 -----------|------------------------------------------ |
 01         |  appel 1 : buffer = [0  1 \n  a  \0]
-           |            buffer = [a \0 \0  \0 \0]
+           |            buffer = [a \0]
         
 ab         |  appel 2 : buffer = [b \n  2  3  \0]
 

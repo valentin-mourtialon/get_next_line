@@ -6,71 +6,72 @@
 /*   By: vmourtia <vmourtia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/13 13:50:38 by vmourtia          #+#    #+#             */
-/*   Updated: 2022/06/08 16:33:30 by vmourtia         ###   ########.fr       */
+/*   Updated: 2022/06/09 12:19:23 by vmourtia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-/*int	fill_buffer(char **buffer, int fd)
+void	*ft_memmove(void *dest, const void *src, size_t n)
 {
-	int nbytes;
-	int	i;
+	char	*d;
+	char	*s;
 
-	i = 0;
-	while (i < BUFFER_SIZE)
+	if (src == NULL && dest == NULL)
+		return (NULL);
+	d = (char *)dest;
+	s = (char *)src;
+	if (d > s)
 	{
-		nbytes = read(fd, (*buffer + i), sizeof(char));
-		if (nbytes < 0)
-			return (-1);
-		if ((*buffer)[i] == '\n')
-			break;
-		i++;
-	}
-	if (i == BUFFER_SIZE)
-	{
-		(*buffer)[i] = '\0'; // When buffer length < line length
-		return (1);
+		while (n--)
+			*(d + n) = *(s + n);
 	}
 	else
 	{
-		(*buffer)[i + 1] = '\0';
-		return (0);
+		while (n--)
+			*d++ = *s++;
 	}
-	return (i);
-}*/
+	return (dest);
+}
+
+int	consume_buffer(char *buffer, int i, int n_calls)
+{
+	if (n_calls != 0)
+	{
+		if (buffer[i] == '\n')
+		{
+			write(1, "\n", 1);
+			return (i);
+		}
+		else if (buffer[i] == '\0')
+			return (-1);
+		else
+		{
+			write(1, &buffer[i], 1);
+			return consume_buffer(buffer, i + 1, n_calls);
+		}
+	}
+	return (-1);
+}
 
 char	*get_next_line(int fd)
 {
-	static char	buffer[BUFFER_SIZE + 1];
+	static char	buffer[BUFFER_SIZE];
+	static int	n_calls = 0;
 	int			i;
 	int			nbytes;
-
-	i = 0;
 	
-	while (i > 0 && i < BUFFER_SIZE)
+	i = consume_buffer(buffer, 0, n_calls);
+	n_calls++;
+	while (i < 0)
 	{
-		printf("%c", *buffer);
-		if (buffer[i] == '\n')
-			i = 0;
-		else
-			i++;
+		nbytes = read(fd, buffer, BUFFER_SIZE);
+		if (nbytes < 0)
+			return (NULL);
+		i = consume_buffer(buffer, 0, n_calls);
 	}
-
-	nbytes = read(fd, buffer, BUFFER_SIZE);
-	if (nbytes < 0)
-		return (NULL);
-	buffer[BUFFER_SIZE] = '\0';
-
-	while(i < BUFFER_SIZE)
-	{
-		printf("%c", buffer[i]);
-		if (buffer[i] == '\n')
-			i = 0;
-		else
-			i++;
-	}
-	
+	printf("\ti = %d\n", i);
+	ft_memmove(&buffer[0], &buffer[i + 1], BUFFER_SIZE - i);
 	return (buffer);
 }
 
@@ -81,5 +82,10 @@ int	main(void)
 	fd = open("testfiles/test5.txt", O_RDONLY);
 	get_next_line(fd);
 	get_next_line(fd);
+	get_next_line(fd);
+	get_next_line(fd);
 	return (0);
 }
+
+// A la fin retourne cdA car il a atteint la fin du 
+// fichier et que je n ai pas gere ce cas cd nbytes < BUFFER_SIZE
