@@ -6,7 +6,7 @@
 /*   By: vmourtia <vmourtia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/13 13:57:00 by vmourtia          #+#    #+#             */
-/*   Updated: 2022/06/09 12:06:34 by vmourtia         ###   ########.fr       */
+/*   Updated: 2022/06/10 17:00:05 by vmourtia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,20 @@
 # include <sys/types.h>
 # include <sys/stat.h>
 
-char	*get_next_line(int fd);
-void	ft_putstr_fd(char *s, int fd);
-size_t	ft_strlen(const char *s);
-char	*ft_strjoin(char const *s1, char const *s2);
-void	*ft_memmove(void *dest, const void *src, size_t n);
-int	consume_buffer(char *buffer, int i, int n_calls);
-char	**ft_split(char const *s, char c);
+typedef struct s_list
+{
+    char            character;
+    struct s_list   *next;
+} t_list;
+
+typedef struct start_list
+{
+    t_list *ptr;
+} start_list;
+
+char        *get_next_line(int fd);
+//void	    ft_putstr_fd(char *s, int fd);
+//size_t	ft_strlen(const char *s);
+//char	    *ft_strjoin(char const *s1, char const *s2);
+//char	    **ft_split(char const *s, char c);
 #endif

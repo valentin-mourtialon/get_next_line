@@ -1,12 +1,18 @@
+Hello World!
+0123
 
+A B C
+D E F
 
-File       |  buffer size = 4 (malloc 4 + 1 pour '\0') | [0 0 0 0 0]
------------|------------------------------------------ |
-01         |  appel 1 : buffer = [0  1 \n  a  \0]
-           |            buffer = [a \0]
-        
-ab         |  appel 2 : buffer = [b \n  2  3  \0]
+[A B C]
 
-23456789A  |  appel 3 : buffer = [4  5  6  7  \0] 
-cd         |  appel 4 : buffer = [8  9  A \n  \0]
-           |  appel 5 : buffer = [c  d  \0  . \0] --> nbytes = 0
+buffer = [D E]
+queue = [D E]
+
+buffer = [F]
+queue = [D E F]
+
+buffer = []
+nbytes = 0
+
+display(queue)
