@@ -5,98 +5,103 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: vmourtia <vmourtia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/05/13 13:50:38 by vmourtia          #+#    #+#             */
-/*   Updated: 2022/06/10 17:05:54 by vmourtia         ###   ########.fr       */
+/*   Created: 2022/06/11 10:40:56 by vmourtia          #+#    #+#             */
+/*   Updated: 2022/06/13 11:46:59 by vmourtia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-
-t_list	*lst_new(char c)
+void	add_each_char_to_queue(char *src, list_start *start, int nbytes)
 {
-	t_list	*lst;
+	t_list	*last;
+	int		i;
 
-	lst = malloc(sizeof(t_list));
-	if (!lst)
-		return (NULL);
-	lst->character = c;
-	lst->next = NULL;
-	return (lst);
-}
-
-start_list	*init_queue(void)
-{
-	start_list	*start;
-
-	start = malloc(sizeof(start_list));
-	if (!start)
-		return (NULL);
-	start->ptr = lst_new(0);
-	return (start);
-}
-
-void	add_each_char_to_queue(char *src, t_list *queue)
-{
-	while (*src)
+	last = lst_last_element(start);
+	i = 0;
+	while (i < nbytes)
 	{
-		queue->character = *src++;
-		queue->next = lst_new(*src);
-		queue = queue->next;
-	}
-	queue->next = lst_new(0);
-	queue = queue->next;
-}
-
-void	display_queue(t_list *queue_start)
-{
-	t_list	*queue;
-	char	c;
-
-	queue = queue_start->next;
-	while (queue->character != '\n')
-	{
-		c = queue->character;
-		write(1, &c, 1);
-		//del le character !
-		queue = queue->next;
+		last->next = lst_new(src[i++]);
+		last = last->next;
 	}
 }
 
-int	a_line_is_found(t_list *queue_start)
+int	a_line_is_found(list_start *start)
 {
-	t_list	*queue;
-	char	c;
+	t_list	*ptr;
 
-	queue = queue_start->next;
-	while (queue->next != NULL)
+	ptr = start->first;
+	while (ptr->next != NULL)
 	{
-		c = queue->character;
-		write(1, &c,1);
-		if  (queue->character == '\n')
+		if  (ptr->character == '\n')
 			return (1);
-		queue = queue->next;
+		ptr = ptr->next;
 	}
 	return (0);
 }
 
+void	display_queue(list_start *start)
+{
+	t_list	*ptr;
+
+	ptr = start->first;
+	while (ptr->character != '\n' && ptr->next != NULL)
+	{
+		ft_putchar_fd(ptr->character, 1);
+		ptr = ptr->next;
+		lst_delete_one(start);
+	}
+	ft_putchar_fd(ptr->character, 1);
+	lst_delete_one(start);
+}
+
+int	queue_is_empty(list_start *start)
+{
+	t_list	*ptr;
+
+	ptr = start->first;
+	if (ptr == NULL)
+	{
+		//free(ptr);
+		//free(start);
+		return (1);
+	}
+	else
+		return (0);
+}
+
 char	*get_next_line(int fd)
 {
-	static char	buffer[BUFFER_SIZE];
-	start_list	*start;
-	t_list		*queue;
-	int			nbytes;
+	static char			buffer[BUFFER_SIZE];
+	static list_start	*start;
+	static int			n_calls = 0;
+	int					nbytes;
 	
-	start = init_queue();
-	//queue = start->next;
-	nbytes = 1;
-	while (!a_line_is_found(start) && nbytes > 0)
+	if (fd < 0 || BUFFER_SIZE < 1 || read(fd, 0, 0) < 0)
 	{
-		nbytes = read(fd, buffer, BUFFER_SIZE);
-		add_each_char_to_queue(buffer, queue);
-		write(1, "\n", 1);
+		return (NULL);
 	}
-	display_queue(queue_start);
+
+	if (n_calls == 0)
+		start = init_queue();
+	n_calls++;
+
+	nbytes = read(fd, buffer, BUFFER_SIZE);
+	
+	if (buffer == NULL || (nbytes == 0 && queue_is_empty(start)))
+	{	
+		//free(start);
+		return (NULL);
+	}
+	while (nbytes == BUFFER_SIZE && !a_line_is_found(start))
+	{
+		add_each_char_to_queue(buffer, start, nbytes);
+		nbytes = read(fd, buffer, BUFFER_SIZE);
+		if (buffer == NULL)
+			return (NULL);
+	}
+	add_each_char_to_queue(buffer, start, nbytes);
+	display_queue(start);
 	return (buffer);
 }
 
@@ -104,8 +109,33 @@ int	main(void)
 {
 	int		fd;
 
-	fd = open("testfiles/test5.txt", O_RDONLY);
+	fd = open("gnlTester/files/nl", O_RDONLY);
+	
 	get_next_line(fd);
-	//get_next_line(fd);
+
+	get_next_line(fd);
+
+	get_next_line(fd);
+	
+	get_next_line(fd);
+	
+	get_next_line(fd);
+
+	get_next_line(fd);
+
+	get_next_line(fd);
+	
+	get_next_line(fd);
+
+	get_next_line(fd);
+
+	get_next_line(fd);
+
+	get_next_line(fd);
+
+	get_next_line(fd);
+
+	close(fd);
+	
 	return (0);
 }

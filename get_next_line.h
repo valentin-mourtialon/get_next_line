@@ -6,7 +6,7 @@
 /*   By: vmourtia <vmourtia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/13 13:57:00 by vmourtia          #+#    #+#             */
-/*   Updated: 2022/06/10 17:00:05 by vmourtia         ###   ########.fr       */
+/*   Updated: 2022/06/11 13:28:47 by vmourtia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,14 +26,18 @@ typedef struct s_list
     struct s_list   *next;
 } t_list;
 
-typedef struct start_list
+typedef struct list_start
 {
-    t_list *ptr;
-} start_list;
+    t_list *first;
+} list_start;
 
+void	    ft_putchar_fd(char c, int fd);
+t_list	    *lst_new(char c);
+list_start	*init_queue(void);
+t_list	    *lst_last_element(list_start *start);
+void	    lst_delete_one(list_start *start);
+void	    add_each_char_to_queue(char *src, list_start *start, int nbytes);
+int	        a_line_is_found(list_start *start);
+void	    display_queue(list_start *start);
 char        *get_next_line(int fd);
-//void	    ft_putstr_fd(char *s, int fd);
-//size_t	ft_strlen(const char *s);
-//char	    *ft_strjoin(char const *s1, char const *s2);
-//char	    **ft_split(char const *s, char c);
 #endif
