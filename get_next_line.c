@@ -6,136 +6,140 @@
 /*   By: vmourtia <vmourtia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/11 10:40:56 by vmourtia          #+#    #+#             */
-/*   Updated: 2022/06/13 11:46:59 by vmourtia         ###   ########.fr       */
+/*   Updated: 2022/06/15 16:35:09 by vmourtia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-void	add_each_char_to_queue(char *src, list_start *start, int nbytes)
+char	*retrieve_new_line(char *memory)
 {
-	t_list	*last;
+	char	*line;
+	int		line_length;
 	int		i;
 
-	last = lst_last_element(start);
+	if (*memory == 0)
+		return (NULL);
+	line_length = 0;
+	while (memory[line_length] && memory[line_length] != '\n')
+		line_length++;
+	line = ft_calloc(line_length + 2, sizeof(char));
+	if (line == NULL)
+		return (NULL);
 	i = 0;
-	while (i < nbytes)
+	while (i < line_length)
 	{
-		last->next = lst_new(src[i++]);
-		last = last->next;
+		line[i] = memory[i];
+		i++;
 	}
+	if (memory[i] && memory[i] == '\n')
+		line[i++] = '\n';
+	line[i] = 0;
+	return (line);
 }
 
-int	a_line_is_found(list_start *start)
+char	*join_and_free(char *memory, char *buffer)
 {
-	t_list	*ptr;
+	char	*memory_temp;
 
-	ptr = start->first;
-	while (ptr->next != NULL)
-	{
-		if  (ptr->character == '\n')
-			return (1);
-		ptr = ptr->next;
-	}
-	return (0);
+	memory_temp = ft_strjoin(memory, buffer);
+	free(memory);
+	return (memory_temp);
 }
 
-void	display_queue(list_start *start)
+/* Writes memory until \n or EOF*/
+char	*write_memory(int fd, char *memory)
 {
-	t_list	*ptr;
-
-	ptr = start->first;
-	while (ptr->character != '\n' && ptr->next != NULL)
+	int		nbytes;
+	char	*buffer;
+	
+	if (!memory)
 	{
-		ft_putchar_fd(ptr->character, 1);
-		ptr = ptr->next;
-		lst_delete_one(start);
+		memory = ft_calloc(1, sizeof(char));
+		if (!memory)
+			return (NULL);
 	}
-	ft_putchar_fd(ptr->character, 1);
-	lst_delete_one(start);
+	buffer = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
+	if (!buffer)
+		return (NULL);
+	nbytes = 1;
+	while (nbytes > 0)
+	{
+		nbytes = read(fd, buffer, BUFFER_SIZE);
+		if (nbytes == -1)
+		{
+			free(buffer);
+			return (NULL);
+		}
+		buffer[nbytes] = '\0';
+		memory = join_and_free(memory, buffer);
+		if (ft_strchr(memory, '\n') != NULL)
+			break;
+	}
+	free(buffer);
+	return (memory);
 }
 
-int	queue_is_empty(list_start *start)
+char	*clear_memory(char *memory, int line_length)
 {
-	t_list	*ptr;
+	char	*clear_memory;
+	int		i;
 
-	ptr = start->first;
-	if (ptr == NULL)
-	{
-		//free(ptr);
-		//free(start);
-		return (1);
-	}
-	else
-		return (0);
+	if (!memory)
+		return (NULL);
+	i = 0;
+	while (memory[i])
+		i++;
+	clear_memory = ft_calloc(i - line_length + 1, sizeof(char));
+	if (clear_memory == NULL)
+		return (NULL);
+	i = 0;
+	while (memory[line_length])
+		clear_memory[i++] = memory[line_length++];
+	free(memory);
+	return (clear_memory);
 }
 
 char	*get_next_line(int fd)
 {
-	static char			buffer[BUFFER_SIZE];
-	static list_start	*start;
-	static int			n_calls = 0;
-	int					nbytes;
+	static char	*memory;
+	char		*line;
+	int			line_length;
 	
 	if (fd < 0 || BUFFER_SIZE < 1 || read(fd, 0, 0) < 0)
-	{
 		return (NULL);
-	}
-
-	if (n_calls == 0)
-		start = init_queue();
-	n_calls++;
-
-	nbytes = read(fd, buffer, BUFFER_SIZE);
-	
-	if (buffer == NULL || (nbytes == 0 && queue_is_empty(start)))
-	{	
-		//free(start);
+	memory = write_memory(fd, memory);
+	if (memory == NULL)
 		return (NULL);
-	}
-	while (nbytes == BUFFER_SIZE && !a_line_is_found(start))
-	{
-		add_each_char_to_queue(buffer, start, nbytes);
-		nbytes = read(fd, buffer, BUFFER_SIZE);
-		if (buffer == NULL)
-			return (NULL);
-	}
-	add_each_char_to_queue(buffer, start, nbytes);
-	display_queue(start);
-	return (buffer);
+	line = retrieve_new_line(memory);
+	if (line == NULL)
+		return (NULL);
+	line_length = ft_strlen(line);
+	memory = clear_memory(memory, line_length);
+	if (memory == NULL)
+		return (NULL);
+	return (line);
 }
-
+/*
 int	main(void)
 {
 	int		fd;
+	int		i = 0;
+	char	*line;
 
-	fd = open("gnlTester/files/nl", O_RDONLY);
-	
-	get_next_line(fd);
+	fd = open("gnlTester/files/41_no_nl", O_RDONLY);
+	//fd = open("testfiles/test2.txt", O_RDONLY);
 
-	get_next_line(fd);
-
-	get_next_line(fd);
-	
-	get_next_line(fd);
-	
-	get_next_line(fd);
-
-	get_next_line(fd);
-
-	get_next_line(fd);
-	
-	get_next_line(fd);
-
-	get_next_line(fd);
-
-	get_next_line(fd);
-
-	get_next_line(fd);
-
-	get_next_line(fd);
+	while(i < 5)
+	{
+		line = get_next_line(fd);
+		printf("%s", line);
+		if (line == NULL)
+			break;	
+		i++;
+	}
 
 	close(fd);
 	
 	return (0);
-}
+}*/

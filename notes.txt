@@ -1,18 +1,2 @@
-Hello World!
-0123
-
-A B C
-D E F
-
-[A B C]
-
-buffer = [D E]
-queue = [D E]
-
-buffer = [F]
-queue = [D E F]
-
-buffer = []
-nbytes = 0
-
-display(queue)
+Pour printf il faut securiser tous les parametres des fonctions
+s il attend un char *, verifier que cest pas NULL

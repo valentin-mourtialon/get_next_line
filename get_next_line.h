@@ -6,7 +6,7 @@
 /*   By: vmourtia <vmourtia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/13 13:57:00 by vmourtia          #+#    #+#             */
-/*   Updated: 2022/06/11 13:28:47 by vmourtia         ###   ########.fr       */
+/*   Updated: 2022/06/15 15:25:32 by vmourtia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,28 +16,18 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <string.h>
+# include <limits.h>
 # include <fcntl.h>
 # include <sys/types.h>
 # include <sys/stat.h>
 
-typedef struct s_list
-{
-    char            character;
-    struct s_list   *next;
-} t_list;
-
-typedef struct list_start
-{
-    t_list *first;
-} list_start;
-
-void	    ft_putchar_fd(char c, int fd);
-t_list	    *lst_new(char c);
-list_start	*init_queue(void);
-t_list	    *lst_last_element(list_start *start);
-void	    lst_delete_one(list_start *start);
-void	    add_each_char_to_queue(char *src, list_start *start, int nbytes);
-int	        a_line_is_found(list_start *start);
-void	    display_queue(list_start *start);
+size_t	    ft_strlen(const char *s);
+char	    *ft_strjoin(char const *s1, char const *s2);
+char	    *ft_strchr(const char *s, int c);
+void	    ft_bzero(void *s, size_t n);
+void	    *ft_calloc(size_t nmemb, size_t size);
+char	    *join_and_free(char *memory, char *buffer);
+char	    *write_memory(int fd, char *memory);
+char	    *retrieve_new_line(char *memory);
 char        *get_next_line(int fd);
 #endif

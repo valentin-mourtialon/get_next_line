@@ -6,62 +6,79 @@
 /*   By: vmourtia <vmourtia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/11 13:20:47 by vmourtia          #+#    #+#             */
-/*   Updated: 2022/06/13 11:25:35 by vmourtia         ###   ########.fr       */
+/*   Updated: 2022/06/15 15:26:20 by vmourtia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-void	ft_putchar_fd(char c, int fd)
+size_t	ft_strlen(const char *s)
 {
-	write(fd, &c, 1);
+	size_t	len;
+
+	len = 0;
+	while (*s++)
+		len++;
+	return (len);
 }
 
-t_list	*lst_new(char c)
+char	*ft_strjoin(char const *s1, char const *s2)
 {
-	t_list	*new;
+	size_t	s1_length;
+	size_t	s2_length;
+	size_t	total_length;
+	size_t	i;
+	char	*output;
 
-	new = malloc(sizeof(t_list));
-	if (!new)
+	s1_length = ft_strlen(s1);
+	s2_length = ft_strlen(s2);
+	total_length = s1_length + s2_length;
+	output = malloc((total_length + 1) * sizeof(char));
+	if (!output)
 		return (NULL);
-	new->character = c;
-	new->next = NULL;
-	return (new);
+	i = 0;
+	while (i < s1_length)
+	{
+		output[i] = s1[i];
+		i++;
+	}
+	while (i - s1_length < s2_length)
+	{
+		output[i] = s2[i - s1_length];
+		i++;
+	}
+	output[i] = '\0';
+	return (output);
 }
 
-list_start	*init_queue(void)
+char	*ft_strchr(const char *s, int c)
 {
-	list_start	*start;
+	while (*s)
+	{
+		if (*s == (char)c)
+			return ((char *)s);
+		s++;
+	}
+	if (*s == '\0' && (char)c == 0)
+		return ((char *)s);
+	return (NULL);
+}
 
-	start = malloc(sizeof(list_start));
-	if (!start)
+void	ft_bzero(void *s, size_t n)
+{
+	while (n-- > 0)
+		*((unsigned char *)s++) = '\0';
+}
+
+void	*ft_calloc(size_t nmemb, size_t size)
+{
+	void	*output;
+
+	if (size != 0 && nmemb > INT_MAX / size)
 		return (NULL);
-	start->first = lst_new(0);
-	return (start);
-}
-
-t_list	*lst_last_element(list_start *start)
-{
-	t_list	*last;
-
-	if (!start)
+	output = malloc(nmemb * size);
+	if (!output)
 		return (NULL);
-	last = start->first;
-    if (!last)
-        return (NULL);
-    else
-    {
-        while (last->next != NULL)
-            last = last->next;
-        return (last);
-    }
-}
-
-void	lst_delete_one(list_start *start)
-{
-	t_list	*first_element;
-
-	first_element = start->first;
-	start->first = start->first->next;
-	free(first_element);
+	ft_bzero(output, nmemb * size);
+	return (output);
 }
