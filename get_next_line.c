@@ -6,7 +6,7 @@
 /*   By: vmourtia <vmourtia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/11 10:40:56 by vmourtia          #+#    #+#             */
-/*   Updated: 2022/06/15 16:35:09 by vmourtia         ###   ########.fr       */
+/*   Updated: 2022/06/20 09:42:12 by vmourtia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,8 @@ char	*write_memory(int fd, char *memory)
 {
 	int		nbytes;
 	char	*buffer;
-	
+	int		i;
+
 	if (!memory)
 	{
 		memory = ft_calloc(1, sizeof(char));
@@ -65,16 +66,12 @@ char	*write_memory(int fd, char *memory)
 	nbytes = 1;
 	while (nbytes > 0)
 	{
-		nbytes = read(fd, buffer, BUFFER_SIZE);
-		if (nbytes == -1)
-		{
-			free(buffer);
+		i = read_file(fd, &buffer, &nbytes, BUFFER_SIZE);
+		if (i == 0)
 			return (NULL);
-		}
-		buffer[nbytes] = '\0';
 		memory = join_and_free(memory, buffer);
 		if (ft_strchr(memory, '\n') != NULL)
-			break;
+			break ;
 	}
 	free(buffer);
 	return (memory);
@@ -105,7 +102,7 @@ char	*get_next_line(int fd)
 	static char	*memory;
 	char		*line;
 	int			line_length;
-	
+
 	if (fd < 0 || BUFFER_SIZE < 1 || read(fd, 0, 0) < 0)
 		return (NULL);
 	memory = write_memory(fd, memory);
@@ -120,26 +117,3 @@ char	*get_next_line(int fd)
 		return (NULL);
 	return (line);
 }
-/*
-int	main(void)
-{
-	int		fd;
-	int		i = 0;
-	char	*line;
-
-	fd = open("gnlTester/files/41_no_nl", O_RDONLY);
-	//fd = open("testfiles/test2.txt", O_RDONLY);
-
-	while(i < 5)
-	{
-		line = get_next_line(fd);
-		printf("%s", line);
-		if (line == NULL)
-			break;	
-		i++;
-	}
-
-	close(fd);
-	
-	return (0);
-}*/

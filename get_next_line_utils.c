@@ -6,7 +6,7 @@
 /*   By: vmourtia <vmourtia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/11 13:20:47 by vmourtia          #+#    #+#             */
-/*   Updated: 2022/06/15 15:26:20 by vmourtia         ###   ########.fr       */
+/*   Updated: 2022/06/20 09:40:18 by vmourtia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,21 +64,30 @@ char	*ft_strchr(const char *s, int c)
 	return (NULL);
 }
 
-void	ft_bzero(void *s, size_t n)
-{
-	while (n-- > 0)
-		*((unsigned char *)s++) = '\0';
-}
-
 void	*ft_calloc(size_t nmemb, size_t size)
 {
 	void	*output;
+	size_t	i;
 
 	if (size != 0 && nmemb > INT_MAX / size)
 		return (NULL);
 	output = malloc(nmemb * size);
 	if (!output)
 		return (NULL);
-	ft_bzero(output, nmemb * size);
+	i = 0;
+	while (i < nmemb * size)
+		((unsigned char *)output)[i++] = '\0';
 	return (output);
+}
+
+int	read_file(int fd, char **buffer, int *nbytes, int buffersize)
+{
+	*nbytes = read(fd, *buffer, buffersize);
+	if (*nbytes == -1)
+	{
+		free(*buffer);
+		return (0);
+	}
+	(*buffer)[*nbytes] = '\0';
+	return (1);
 }
