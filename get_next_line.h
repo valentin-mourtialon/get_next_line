@@ -6,28 +6,26 @@
 /*   By: vmourtia <vmourtia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/13 13:57:00 by vmourtia          #+#    #+#             */
-/*   Updated: 2022/06/20 09:41:28 by vmourtia         ###   ########.fr       */
+/*   Updated: 2022/06/22 10:36:11 by vmourtia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
-# include <stdio.h>
-# include <unistd.h>
-# include <stdlib.h>
-# include <string.h>
-# include <limits.h>
-# include <fcntl.h>
-# include <sys/types.h>
-# include <sys/stat.h>
 
-size_t	ft_strlen(const char *s);
-int		read_file(int fd, char **buffer, int *nbytes, int buffersize);
-char	*ft_strjoin(char const *s1, char const *s2);
-char	*ft_strchr(const char *s, int c);
-void	*ft_calloc(size_t nmemb, size_t size);
-char	*join_and_free(char *memory, char *buffer);
-char	*write_memory(int fd, char *memory);
-char	*retrieve_new_line(char *memory);
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 100000000
+# endif
+
+# include <stdlib.h>
+# include <stdio.h>
+# include <fcntl.h>
+# include <unistd.h>
+
 char	*get_next_line(int fd);
+char	*ft_strjoin(char *memory, char *buffer);
+char	*ft_strchr(char *s, int c);
+size_t	ft_strlen(char *s);
+char	*write_line_from_memory(char *memory);
+char	*clear_memory(char *mem_line);
 #endif

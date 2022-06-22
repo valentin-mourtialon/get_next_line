@@ -6,88 +6,113 @@
 /*   By: vmourtia <vmourtia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/11 13:20:47 by vmourtia          #+#    #+#             */
-/*   Updated: 2022/06/20 09:40:18 by vmourtia         ###   ########.fr       */
+/*   Updated: 2022/06/22 10:35:37 by vmourtia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-size_t	ft_strlen(const char *s)
+char	*write_line_from_memory(char *memory)
 {
-	size_t	len;
+	char	*line;
+	int		i;
 
-	len = 0;
-	while (*s++)
-		len++;
-	return (len);
-}
-
-char	*ft_strjoin(char const *s1, char const *s2)
-{
-	size_t	s1_length;
-	size_t	s2_length;
-	size_t	total_length;
-	size_t	i;
-	char	*output;
-
-	s1_length = ft_strlen(s1);
-	s2_length = ft_strlen(s2);
-	total_length = s1_length + s2_length;
-	output = malloc((total_length + 1) * sizeof(char));
-	if (!output)
+	i = 0;
+	if (!memory[i])
+		return (NULL);
+	while (memory[i] && memory[i] != '\n')
+		i++;
+	line = malloc(sizeof(char) * (i + 2));
+	if (!line)
 		return (NULL);
 	i = 0;
-	while (i < s1_length)
+	while (memory[i] && memory[i] != '\n')
 	{
-		output[i] = s1[i];
+		line[i] = memory[i];
 		i++;
 	}
-	while (i - s1_length < s2_length)
+	if (memory[i] == '\n')
 	{
-		output[i] = s2[i - s1_length];
+		line[i] = memory[i];
 		i++;
 	}
-	output[i] = '\0';
-	return (output);
+	line[i] = '\0';
+	return (line);
 }
 
-char	*ft_strchr(const char *s, int c)
+char	*clear_memory(char *memory)
 {
+	char	*cleared_memory;
+	int		i;
+	int		j;
+
+	i = 0;
+	while (memory[i] && memory[i] != '\n')
+		i++;
+	if (!memory[i])
+		return (free(memory), NULL);
+	cleared_memory = malloc(sizeof(char) * (ft_strlen(memory) - i + 1));
+	if (!cleared_memory)
+		return (NULL);
+	j = 0;
+	while (memory[i])
+		cleared_memory[j++] = memory[++i];
+	cleared_memory[j] = '\0';
+	free(memory);
+	return (cleared_memory);
+}
+
+size_t	ft_strlen(char *s)
+{
+	size_t	length;
+
+	length = 0;
+	while (*s++)
+		length++;
+	return (length);
+}
+
+char	*ft_strchr(char *s, int c)
+{
+	if (!s)
+		return (NULL);
+	if (c > 256)
+		c %= 256;
 	while (*s)
 	{
-		if (*s == (char)c)
-			return ((char *)s);
+		if (*s == c)
+			return (s);
 		s++;
 	}
-	if (*s == '\0' && (char)c == 0)
-		return ((char *)s);
+	if (*s == c)
+		return (s);
 	return (NULL);
 }
 
-void	*ft_calloc(size_t nmemb, size_t size)
+char	*ft_strjoin(char *memory, char *buffer)
 {
-	void	*output;
 	size_t	i;
+	size_t	j;
+	char	*join;
 
-	if (size != 0 && nmemb > INT_MAX / size)
-		return (NULL);
-	output = malloc(nmemb * size);
-	if (!output)
-		return (NULL);
-	i = 0;
-	while (i < nmemb * size)
-		((unsigned char *)output)[i++] = '\0';
-	return (output);
-}
-
-int	read_file(int fd, char **buffer, int *nbytes, int buffersize)
-{
-	*nbytes = read(fd, *buffer, buffersize);
-	if (*nbytes == -1)
+	if (!memory)
 	{
-		free(*buffer);
-		return (0);
+		memory = malloc(sizeof(char));
+		memory[0] = '\0';
 	}
-	(*buffer)[*nbytes] = '\0';
-	return (1);
+	if (!memory || !buffer)
+		return (NULL);
+	join = malloc(sizeof(char) * (ft_strlen(memory) + ft_strlen(buffer) + 1));
+	if (!join)
+		return (NULL);
+	i = -1;
+	while (memory[++i] != '\0')
+		join[i] = memory[i];
+	j = 0;
+	while (buffer[j] != '\0')
+		join[i++] = buffer[j++];
+	join[ft_strlen(memory) + ft_strlen(buffer)] = '\0';
+	free(memory);
+	free(buffer);
+	return (join);
 }

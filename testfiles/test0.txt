@@ -1,0 +1,7 @@
+Effectuez au minimum les tests d'erreur suivants afin de vérifier la
+gestion d'erreur du programmme.
+- Passez un fd arbitraire a la fonction get_next_line, sur lequel il
+n'est pas possible de lire (par ex. 42) La fonction doit renvoyer NULL.
+- Vérifiez les retours d'erreur de malloc, read et open.
+Si la partie "gestion d'erreur" est fausse, merci de ne pas noter la
+partie suivante, la correction s'arrête ici.
