@@ -6,7 +6,7 @@
 /*   By: vmourtia <vmourtia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/11 10:40:56 by vmourtia          #+#    #+#             */
-/*   Updated: 2022/06/22 10:35:57 by vmourtia         ###   ########.fr       */
+/*   Updated: 2022/06/22 11:10:06 by vmourtia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,10 +37,10 @@ char	*get_next_line(int fd)
 	memory = clear_memory(memory);
 	return (line);
 }
-/*
+
 int	main(void)
 {
-	int fd = open("../testfiles/test0.txt", O_RDONLY);
+	int fd = open("testfiles/test0.txt", O_RDONLY);
 	char *line;
 
 	for (int i = 0; i < 10; i++)
@@ -54,4 +54,4 @@ int	main(void)
 	}
 	close(fd);
 	return (0);
-}*/
+}
